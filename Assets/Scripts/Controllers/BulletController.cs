@@ -20,7 +20,7 @@ public class BulletController : MonoBehaviour
         // Es: se maxRange è 5, maxRangeSquared sarà 25. Evita il calcolo della radice quadrata nell'Update.
         maxRangeSquared = maxRange * maxRange;
 
-        Debug.Assert(gameObject.CompareTag("PlayerBullet"), "Manca il tag PlayerBullet sul prefab!");
+        Debug.Assert(gameObject.CompareTag("Bullet"), "Manca il tag Bullet sul prefab!");
     }
 
     void Update()
@@ -32,14 +32,21 @@ public class BulletController : MonoBehaviour
         // Se la distanza percorsa supera il range massimo, il proiettile viene distrutto
         if (currentOffset.sqrMagnitude >= maxRangeSquared)
         {
-            Destroy(gameObject);
+            BulletPool.Instance.ReturnBullet(gameObject);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // if (collision.CompareTag("Muro"))
+        // {
+        //     // Rimette il proiettile nella pool
+        //     BulletPool.Instance.ReturnBullet(gameObject);
+        //     return;
+        // }
+
         // Se tocca il Player (o se stesso), ESCE SUBITO e non fa nulla
-        if (collision.CompareTag("Player") || collision.CompareTag("PlayerBullet"))
+        if (collision.CompareTag("Player") || collision.CompareTag("Bullet"))
         {
             return;
         }
@@ -48,7 +55,7 @@ public class BulletController : MonoBehaviour
         if (collision.TryGetComponent<EnemyController>(out EnemyController enemy))
         {
             enemy.TakeDamage(damage);
-            Destroy(gameObject);
+            BulletPool.Instance.ReturnBullet(gameObject);
         }
     }
 }

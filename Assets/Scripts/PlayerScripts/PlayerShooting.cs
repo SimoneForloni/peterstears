@@ -52,17 +52,13 @@ public class PlayerShooting : MonoBehaviour
 
     private void ShootBullet(Vector2 direction)
     {
-        if (bulletPrefab == null)
-        {
-            Debug.LogWarning("Prefab proiettile mancante");
-            return;
-        }
+        if (BulletPool.Instance == null) return;
 
         // Aggiunge un offset allo spawn del proiettile per evitare collisioni con il player
         Vector2 spawnPos = (Vector2)transform.position + direction * 0.3f;
 
         // Crea il proiettile nella posizione attuale del giocatore
-        GameObject bullet = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
+        GameObject bullet = BulletPool.Instance.GetBullet(spawnPos, Quaternion.identity);
 
         // Assegna la velocità al proiettile (TryGetComponent ottimizza la memoria ed evita allocazioni spazzatura)
         if (bullet.TryGetComponent<Rigidbody2D>(out Rigidbody2D bulletRb))
