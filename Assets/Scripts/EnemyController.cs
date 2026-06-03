@@ -26,27 +26,25 @@ public class EnemyController : MonoBehaviour
         rb.freezeRotation = true;                                        // Impedisce al personaggio di ruotare su se stesso quando urta un oggetto
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous; // Per evitare di passare attraverso i muri
 
-        // Cerca il giocatore in scena una sola volta all'avvio per non pesare sulla CPU
-        PlayerEntity player = FindAnyObjectByType<PlayerEntity>();
-        if (player != null)
-        {
-            playerTransform = player.transform;
-        }
+        // Controlla che l'istanza della classe PlayerEntity esista (presente solo se il player esiste)
+        if (PlayerEntity.Instance != null)
+            playerTransform = PlayerEntity.Instance.transform;
     }
 
     void FixedUpdate()
-    {
-        if (playerTransform != null)
-        {
-            // Calcola la direzione verso il giocatore dal centro del Rigidbody
-            Vector2 direction = ((Vector2)playerTransform.position - rb.position).normalized;
+    {   
+        // Se il player non esiste ritorna
+        if (playerTransform == null) return;
 
-            // Calcola la nuova posizione target per questo frame basandosi sul fixedDeltaTime
-            Vector2 targetPosition = rb.position + direction * moveSpeed * Time.fixedDeltaTime;
+        // Calcola la direzione verso il giocatore dal centro del Rigidbody
+        Vector2 direction = ((Vector2)playerTransform.position - rb.position).normalized;
 
-            // Muove il Rigidbody tenendo conto delle collisioni (evita tremolii, jittering e compenetrazioni nei muri)
-            rb.MovePosition(targetPosition);
-        }
+        // Calcola la nuova posizione target per questo frame basandosi sul fixedDeltaTime
+        Vector2 targetPosition = rb.position + direction * moveSpeed * Time.fixedDeltaTime;
+
+        // Muove il Rigidbody tenendo conto delle collisioni (evita tremolii, jittering e compenetrazioni nei muri)
+        rb.MovePosition(targetPosition);
+        
     }
 
     private void OnCollisionStay2D(Collision2D collision)

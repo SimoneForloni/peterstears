@@ -1,7 +1,11 @@
+using System;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
+    // Espone la vita del player con un evento
+    public event Action<float, float> OnHealthChanged; // (current, max)
+
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 3.5f;  // Numero di cuori di vita
     private float currentHealth;
@@ -39,6 +43,7 @@ public class PlayerHealth : MonoBehaviour
         if (isInvulnerable) return;
 
         currentHealth -= damage;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
         Debug.Log("Player ha subito danno! Vita rimasta: " + currentHealth);
 
         if (currentHealth <= 0)

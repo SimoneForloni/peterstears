@@ -30,11 +30,14 @@ public class PlayerShooting : MonoBehaviour
 
     private void HandleShooting()
     {
+        // Se la mainCamera viene distrutta viene ricreata qua (es. Cambio di scena)
+        if (mainCamera == null) mainCamera = Camera.main;
         // Se è passato abbastanza tempo procede con la logica di sparo del proiettile
         if (!inputHandler.IsShootPressed || Time.time < nextFireTime) return;
 
-        // Ottieni la posizione del mouse generica (funziona sia con Mouse che con Touch/Pointer su più piattaforme)
-        Vector2 mouseWindowPos = Pointer.current != null ? Pointer.current.position.ReadValue() : Vector2.zero;
+        // Se il pointer esiste ottieni la posizione del mouse generica(funziona sia con Mouse che con Touch/Pointer su più piattaforme)
+        if (Pointer.current == null) return;
+        Vector2 mouseWindowPos = Pointer.current.position.ReadValue();
 
         // Calcola la direzione dal centro dello schermo (dove c'è il player) verso il cursore usando la camera in cache
         Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(mouseWindowPos);
@@ -55,8 +58,11 @@ public class PlayerShooting : MonoBehaviour
             return;
         }
 
+        // Aggiunge un offset allo spawn del proiettile per evitare collisioni con il player
+        Vector2 spawnPos = (Vector2)transform.position + direction * 0.3f;
+
         // Crea il proiettile nella posizione attuale del giocatore
-        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+        GameObject bullet = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
 
         // Assegna la velocità al proiettile (TryGetComponent ottimizza la memoria ed evita allocazioni spazzatura)
         if (bullet.TryGetComponent<Rigidbody2D>(out Rigidbody2D bulletRb))

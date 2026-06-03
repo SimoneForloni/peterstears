@@ -11,7 +11,7 @@ public class BulletController : MonoBehaviour
     private Vector2 initialPosition;
     private float maxRangeSquared; // Memorizza la distanza massima al quadrato per ottimizzare i calcoli
 
-    void Start()
+    void OnEnable()
     {
         // Memorizza il punto in cui il proiettile è stato generato
         initialPosition = transform.position;
@@ -19,6 +19,8 @@ public class BulletController : MonoBehaviour
         // Calcoliamo il quadrato del range una volta sola all'inizio.
         // Es: se maxRange è 5, maxRangeSquared sarà 25. Evita il calcolo della radice quadrata nell'Update.
         maxRangeSquared = maxRange * maxRange;
+
+        Debug.Assert(gameObject.CompareTag("PlayerBullet"), "Manca il tag PlayerBullet sul prefab!");
     }
 
     void Update()

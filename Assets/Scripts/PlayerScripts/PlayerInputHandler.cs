@@ -38,7 +38,7 @@ public class PlayerInputHandler : MonoBehaviour
         controls.Player.Shoot.canceled -= OnShootCanceled;
 
         // Disattiva i controlli quando l'oggetto non è attivo
-        controls.Disable();
+        controls?.Disable();
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)

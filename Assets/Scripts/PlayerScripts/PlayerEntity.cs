@@ -6,6 +6,9 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerHealth))]
 public class PlayerEntity : MonoBehaviour
 {
+    // Istanza del player (questa classe)
+    public static PlayerEntity Instance { get; private set; }
+
     // Riferimenti ai sotto-moduli (accessibili in sola lettura dall'esterno)
     public PlayerInputHandler InputHandler { get; private set; }
     public PlayerMovement Movement { get; private set; }
@@ -14,6 +17,8 @@ public class PlayerEntity : MonoBehaviour
 
     private void Awake()
     {
+        // Assegna l'istanza di questa classe alla variabile
+        Instance = this;
         // Centralizziamo il recupero di tutti i componenti sul Player
         InputHandler = GetComponent<PlayerInputHandler>();
         Movement = GetComponent<PlayerMovement>();
