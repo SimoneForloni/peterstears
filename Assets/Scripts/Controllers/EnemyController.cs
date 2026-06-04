@@ -1,25 +1,44 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))] // Evita bug: Unity aggiungerà automaticamente un Rigidbody2D se manca
+[RequireComponent(typeof(Rigidbody2D))] // Evita bug: Unity aggiungerà automaticamente un Rigidbody2D se manca\
 public class EnemyController : MonoBehaviour
 {
-    [Header("Statistiche")]
-    [SerializeField] private float maxHealth = 3f;                       // Vita massima del nemico
-    [SerializeField] private float moveSpeed = 3f;                       // Velocità di movimento
-    [SerializeField] private float attackDamage = 0.5f;                  // Danno inflitto al giocatore (mezzo cuore)
-    [SerializeField] private float attackCooldown = 1f;                  // Tempo minimo di attesa tra un attacco e l'altro
+    [Header("Obj Stats")]
+    [SerializeField] private EnemyData enemyData;               // Tempo minimo di attesa tra un attacco e l'altro
 
     private float currentHealth;
     private float nextAttackTime;                                        // Timer per gestire il cooldown degli attacchi
 
     private Rigidbody2D rb;
+    private SpriteRenderer sr;
     private Transform playerTransform;
 
     void Start()
     {
-        // Recupera il componente Rigidbody2D dal Nemico
+        // Recupera il componente Rigidbody2D dal Nemico e lo SpriteRenderer dal figlio
         rb = GetComponent<Rigidbody2D>();
-        currentHealth = maxHealth;
+        sr = GetComponentInChildren<SpriteRenderer>();
+
+        if (enemyData != null)
+        {
+            currentHealth = enemyData.maxHealth;
+
+            // Applica lo sprite se presente
+            if (sr != null && enemyData.enemySprite != null)
+            {
+                sr.sprite = enemyData.enemySprite;
+            }
+            else if (sr == null)
+            {
+                Debug.LogError($"ERRORE: Impossibile trovare uno SpriteRenderer nei sotto-oggetti di {gameObject.name}!");
+            }
+        }
+        else
+        {
+            Debug.LogError($"ATTENZIONE: Manca l'EnemyData assegnato sull'oggetto {gameObject.name}!");
+            currentHealth = 3f;
+        }
+
 
         // Configurazione fisica per un gioco top-down
         rb.gravityScale = 0f;                                            // Niente gravità verso il basso
@@ -40,7 +59,7 @@ public class EnemyController : MonoBehaviour
         Vector2 direction = ((Vector2)playerTransform.position - rb.position).normalized;
 
         // Calcola la nuova posizione target per questo frame basandosi sul fixedDeltaTime
-        Vector2 targetPosition = rb.position + direction * moveSpeed * Time.fixedDeltaTime;
+        Vector2 targetPosition = rb.position + direction * enemyData.moveSpeed * Time.fixedDeltaTime;
 
         // Muove il Rigidbody tenendo conto delle collisioni (evita tremolii, jittering e compenetrazioni nei muri)
         rb.MovePosition(targetPosition);
@@ -56,10 +75,10 @@ public class EnemyController : MonoBehaviour
             if (Time.time >= nextAttackTime)
             {
                 // Applica il danno al giocatore
-                player.Health.TakeDamage(attackDamage);
+                player.Health.TakeDamage(enemyData.attackDamage);
 
                 // Imposta il prossimo momento utile per poter attaccare di nuovo
-                nextAttackTime = Time.time + attackCooldown;
+                nextAttackTime = Time.time + enemyData.attackCooldown;
             }
         }
     }

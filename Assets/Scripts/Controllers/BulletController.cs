@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    [Header("Impostazioni del proiettile")]
+    [Header("Bullet Setting")]
     [SerializeField] private float maxRange = 5f; // Distanza massima che il proiettile può percorrere
 
-    [Header("Danno")]
+    [Header("Damage")]
     [SerializeField] private float damage = 1f; // Di base fa 1 cuore/punto di danno
 
     private Vector2 initialPosition;
