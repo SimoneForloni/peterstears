@@ -1,41 +1,50 @@
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerInputHandler))]
-[RequireComponent(typeof(PlayerMovement))]
-[RequireComponent(typeof(PlayerShooting))]
-[RequireComponent(typeof(PlayerHealth))]
-public class PlayerEntity : MonoBehaviour
+namespace PlayerScripts
 {
-    // Istanza del player (questa classe)
-    public static PlayerEntity Instance { get; private set; }
-
-    // Riferimenti ai sotto-moduli (accessibili in sola lettura dall'esterno)
-    public PlayerInputHandler InputHandler { get; private set; }
-    public PlayerMovement Movement { get; private set; }
-    public PlayerShooting Shooting { get; private set; }
-    public PlayerHealth Health { get; private set; }
-
-    private void Awake()
+    [RequireComponent(typeof(PlayerInputHandler))]
+    [RequireComponent(typeof(PlayerMovement))]
+    [RequireComponent(typeof(PlayerShooting))]
+    [RequireComponent(typeof(PlayerHealth))]
+    public class PlayerEntity : MonoBehaviour
     {
-        // Assegna l'istanza di questa classe alla variabile
-        Instance = this;
-        // Centralizziamo il recupero di tutti i componenti sul Player
-        InputHandler = GetComponent<PlayerInputHandler>();
-        Movement = GetComponent<PlayerMovement>();
-        Shooting = GetComponent<PlayerShooting>();
-        Health = GetComponent<PlayerHealth>();
-    }
+        // Istanza del player (questa classe)
+        public static PlayerEntity Instance { get; private set; }
 
-    // Esempio di gestione centrale di un evento: il Player muore
-    public void HandlePlayerDeath()
-    {
-        Debug.Log("Il Direttore d'Orchestra disattiva il Player.");
+        // Riferimenti ai sotto-moduli (accessibili in sola lettura dall'esterno)
+        private PlayerInputHandler inputHandler;
+        private PlayerMovement movement;
+        private PlayerShooting shooting;
+        private PlayerHealth health;
+
+        public void TakeDamage(float damage)
+        {
+            health.TakeDamage(damage);
+        }
         
-        // Disattiviamo l'input e lo sparo prima di distruggere l'oggetto
-        InputHandler.enabled = false;
-        Shooting.enabled = false;
-        Movement.enabled = false;
 
-        Destroy(gameObject, 0.5f); // Distruggi dopo mezzo secondo (magari per far finire un'animazione)
+        private void Awake()
+        {
+            // Assegna l'istanza di questa classe alla variabile
+            Instance = this;
+            // Centralizziamo il recupero di tutti i componenti sul Player
+            inputHandler = GetComponent<PlayerInputHandler>();
+            movement = GetComponent<PlayerMovement>();
+            shooting = GetComponent<PlayerShooting>();
+            health = GetComponent<PlayerHealth>();
+        }
+
+        // Esempio di gestione centrale di un evento: il Player muore
+        public void HandlePlayerDeath()
+        {
+            Debug.Log("Il Direttore d'Orchestra disattiva il Player.");
+        
+            // Disattiviamo l'input e lo sparo prima di distruggere l'oggetto
+            inputHandler.enabled = false;
+            shooting.enabled = false;
+            movement.enabled = false;
+
+            Destroy(gameObject, 0.5f); // Distruggi dopo mezzo secondo (magari per far finire un'animazione)
+        }
     }
 }
