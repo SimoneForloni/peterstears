@@ -8,9 +8,9 @@ namespace PlayerScripts
     public class PlayerShooting : MonoBehaviour
     {
         [Header("Shooting Settings")]
-        [SerializeField] private GameObject bulletPrefab; // Prefab del proiettile
-        [SerializeField] private float fireRate = 0.1f;   // Tempo di attesa tra ogni colpo
-        [SerializeField] private float bulletSpeed = 10f; // Velocità del proiettile
+        [SerializeField] private GameObject bulletPrefab; // Bullet prefab
+        [SerializeField] private float fireRate = 0.1f;   // Time between shots
+        [SerializeField] private float bulletSpeed = 10f; // Bullet speed
 
         private PlayerInputHandler inputHandler;
         private Camera mainCamera;
@@ -18,60 +18,60 @@ namespace PlayerScripts
 
         private void Awake()
         {
-            // Recupera il componente InputHandler dal Player
+            // Get the InputHandler component from the player
             inputHandler = GetComponent<PlayerInputHandler>();
 
-            // Caching della camera principale per evitare l'uso dispendioso di Camera.main nell' Update
+            // Cache the main camera to avoid expensive use of Camera.main in Update
             mainCamera = Camera.main;
         }
 
         private void Update()
         {
-            // Logica dello sparo
+            // Bullet shooting logic
             HandleShooting();
         }
 
         private void HandleShooting()
         {
-            // Se è passato abbastanza tempo procede con la logica di sparo del proiettile
+            // If enough time has passed, proceed with bullet shooting logic
             if (!inputHandler.IsShootPressed || Time.time < nextFireTime) return;
             
-            // Se la mainCamera viene distrutta viene ricreata qua (es. Cambio di scena)
+            // If the mainCamera is destroyed, recreate it here (e.g., scene change)
             if (!mainCamera)
             {
                 mainCamera = Camera.main;
                 
-                // Se la fotocamera non esiste proprio nella scena la funzione ritorna
+                // If the camera doesn't exist in the scene at all, the function returns
                 if (!mainCamera) return;
             }
             
             
 
-            // Se il pointer esiste ottiene la posizione del mouse generica (funziona sia con Mouse che con Touch/Pointer su più piattaforme)
+            // If the pointer exists, get the generic mouse position (works with Mouse and Touch/Pointer on multiple platforms)
             if (Pointer.current == null) return;
             var mouseWindowPos = Pointer.current.position.ReadValue();
 
-            // Calcola la direzione dal centro dello schermo (dove c'è il player) verso il cursore usando la camera in cache
+            // Calculate the direction from the center of the screen (where the player is) to the cursor using the cached camera
             var mouseWorldPosition = mainCamera.ScreenToWorldPoint(mouseWindowPos);
-            mouseWorldPosition.z = 0f;   // La z (profondità) non serve
+            mouseWorldPosition.z = 0f;   // The z (depth) doesn't matter
             var shootDirection = ((Vector2)mouseWorldPosition - (Vector2)transform.position).normalized;
 
-            // Logica dei proiettili
+            // Bullet logic
             ShootBullet(shootDirection);
-            nextFireTime = Time.time + fireRate;    // Resetta il timer di ricarica
+            nextFireTime = Time.time + fireRate;    // Reset the cooldown timer
         }
 
         private void ShootBullet(Vector2 direction)
         {
             if (!BulletPool.Instance) return;
 
-            // Aggiunge un offset allo spawn del proiettile per evitare collisioni con il player
+            // Add an offset to the bullet spawn position to avoid player collisions
             var spawnPos = (Vector2)transform.position + direction * 0.3f;
 
-            // Crea il proiettile nella posizione attuale del giocatore
+            // Create the bullet at the current player position
             var bullet = BulletPool.Instance.GetBullet(spawnPos, Quaternion.identity);
 
-            // Assegna la velocità al proiettile (TryGetComponent ottimizza la memoria ed evita allocazioni spazzatura)
+            // Assign speed to the bullet (TryGetComponent optimizes memory and avoids garbage allocation)
             if (bullet.TryGetComponent(out Rigidbody2D bulletRb))
             {
                 bulletRb.linearVelocity = direction * bulletSpeed;

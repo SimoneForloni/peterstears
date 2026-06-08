@@ -6,33 +6,33 @@ namespace Controller
     public class BulletController : MonoBehaviour
     {
         [Header("Bullet Setting")]
-        [SerializeField] private float maxRange = 5f; // Distanza massima che il proiettile può percorrere
+        [SerializeField] private float maxRange = 5f; // Maximum distance the bullet can travel
 
         [Header("Damage")]
-        [SerializeField] private float damage = 1f; // Di base fa 1 cuore/punto di danno
+        [SerializeField] private float damage = 1f; // Base damage of 1 heart/point
 
         private Vector2 initialPosition;
-        private float maxRangeSquared; // Memorizza la distanza massima al quadrato per ottimizzare i calcoli
+        private float maxRangeSquared; // Stores the maximum distance squared for optimized calculations
 
         void OnEnable()
         {
-            // Memorizza il punto in cui il proiettile è stato generato
+            // Store the point where the bullet was generated
             initialPosition = transform.position;
 
-            // Calcoliamo il quadrato del range una volta sola all'inizio.
-            // Es: se maxRange è 5, maxRangeSquared sarà 25. Evita il calcolo della radice quadrata nell'Update.
+            // Calculate the square of the range once at the start.
+            // Ex: if maxRange is 5, maxRangeSquared will be 25. Avoids square root calculation in Update.
             maxRangeSquared = maxRange * maxRange;
 
-            Debug.Assert(gameObject.CompareTag("Bullet"), "Manca il tag Bullet sul prefab!");
+            Debug.Assert(gameObject.CompareTag("Bullet"), "Missing Bullet tag on prefab!");
         }
 
         void Update()
         {
-            // Calcola il vettore di spostamento attuale rispetto alla partenza
+            // Calculate the current offset vector relative to the start
             Vector2 currentOffset = (Vector2)transform.position - initialPosition;
 
-            // sqrMagnitude restituisce la lunghezza del vettore AL QUADRATO (senza fare la radice)
-            // Se la distanza percorsa supera il range massimo, il proiettile viene distrutto
+            // sqrMagnitude returns the length of the vector SQUARED (without taking the square root)
+            // If the distance traveled exceeds the maximum range, the bullet is destroyed
             if (currentOffset.sqrMagnitude >= maxRangeSquared)
             {
                 BulletPool.Instance.ReturnBullet(gameObject);
@@ -41,17 +41,17 @@ namespace Controller
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            // if (collision.CompareTag("Muro"))
+            // if (collision.CompareTag("Wall"))
             // {
-            //     // Rimette il proiettile nella pool
+            //     // Return the bullet to the pool
             //     BulletPool.Instance.ReturnBullet(gameObject);
             //     return;
             // }
 
-            // Se tocca il Player (o se stesso), ESCE SUBITO e non fa nulla.
+            // If it touches the Player or itself, EXIT IMMEDIATELY and do nothing.
             if (collision.CompareTag("Player") || collision.CompareTag("Bullet")) return;
 
-            // Se non tocca non il nemico ritorna, altrimenti fa danno e si distrugge.
+            // If it doesn't touch an enemy, return. Otherwise, deal damage and destroy it.
             if (!collision.TryGetComponent(out EnemyController enemy)) return;
         
             enemy.TakeDamage(damage);

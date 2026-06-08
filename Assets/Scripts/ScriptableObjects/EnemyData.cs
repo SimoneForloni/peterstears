@@ -10,9 +10,9 @@ namespace ScriptableObjects
         [field: SerializeField] public Sprite EnemySprite { get; private set; }
 
         [field: Header("Evolution & Drops")]
-        [field: SerializeField] public GeneticStrain Strain { get; private set; } // Il ceppo genetico di questa specie
-        [field: SerializeField] public GameObject BiomassPrefab { get; private set; } // Il prefab della biomassa/gene che rilascia
-        [field: SerializeField] public int BiomassRewardAmount { get; private set; } = 3; // Quanta biomassa rilascia alla morte
+        [field: SerializeField] public GeneticStrain Strain { get; private set; } // The genetic strain of this species
+        [field: SerializeField] public GameObject BiomassPrefab { get; private set; } // The prefab for the biomass/gene that is dropped
+        [field: SerializeField] public int BiomassRewardAmount { get; private set; } = 3; // How much biomass is dropped on death
 
         [field: Header("Combat Stats")] 
         [field: SerializeField] public float MaxHealth { get; private set; } = 3f;
@@ -24,6 +24,6 @@ namespace ScriptableObjects
         
         [field: Header("AI Configuration")]
         [field: SerializeField] public EnemyBehavior AIBehavior { get; private set; }
-        [field: SerializeField] public float AttackRange { get; private set; } = 1.5f; // Distanza ottimale per i comportamenti di attacco/kiting
+        [field: SerializeField] public float AttackRange { get; private set; } = 1.5f; // Optimal distance for attack/kiting behaviors
     }
 }

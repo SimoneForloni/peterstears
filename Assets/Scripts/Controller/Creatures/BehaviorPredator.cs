@@ -6,6 +6,7 @@ namespace Controller.Creatures
 {
     public class BehaviorPredator : EnemyBehavior
     {
+        // Executes the physics-based behavior for the predator enemy.
         public override void ExecutePhysicsBehavior(EnemyController enemy, Rigidbody2D rb, EnemyData data)
         {
             if (!PlayerEntity.Instance) return;

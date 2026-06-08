@@ -6,6 +6,7 @@ namespace Controller.Creatures
 {
     public class BehaviorSniper : EnemyBehavior
     {
+        // Executes the physics-based behavior for the sniper enemy.
         public override void ExecutePhysicsBehavior(EnemyController enemy, Rigidbody2D rb, EnemyData data)
         {
             if (!PlayerEntity.Instance) return;
@@ -14,19 +15,19 @@ namespace Controller.Creatures
             var direction = playerPos - rb.position;
             var distance = direction.magnitude;
             
-            // Se il giocatore è troppo vicino, scappa per riposizionarsi
+            // If the player is too close, escape to reposition
             if (distance < data.AttackRange * 0.6f)
             {
                 var escapePos = rb.position - direction.normalized * (data.MoveSpeed * Time.fixedDeltaTime);
                 rb.MovePosition(escapePos);
             }
-            // Se è troppo lontano, si avvicina fino al suo raggio d'azione ottimale
+            // If it's too far, approach until optimal attack range
             else if (distance > data.AttackRange)
             {
                 var approachPos = rb.position + direction.normalized * (data.MoveSpeed * Time.fixedDeltaTime);
                 rb.MovePosition(approachPos);
             }
-            // Se si trova nel raggio d'azione ideale, azzera la velocità fisica e spara (la logica di sparo sarà gestita dal controller)
+            // If in the ideal attack range, zero out physical velocity and shoot (shooting logic will be handled by the controller)
             else
             {
                 rb.linearVelocity = Vector2.zero;

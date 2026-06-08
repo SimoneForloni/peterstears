@@ -7,13 +7,13 @@ namespace ScriptableObjects
     [CreateAssetMenu(fileName = "EnemyBehavior", menuName = "Scriptable Objects/EnemyBehavior")]
     public abstract class EnemyBehavior : ScriptableObject
     {
-        // Questo metodo eseguirà la logica di movimento fisica nel FixedUpdate dell' EnemyController
+        // This method will execute the physics movement logic in the FixedUpdate of the EnemyController
         public abstract void ExecutePhysicsBehavior(EnemyController enemy, Rigidbody2D rb, EnemyData data);
         
-        // --- FUNZIONI UTILI PRE-COMPILATE PER TUTTI I NEMICI ---
+        // --- PRE-COMPILED UTIL FUNCTIONS FOR ALL ENEMIES ---
         
         /// <summary>
-        /// Verifica se il nemico è troppo vicino al giocatore (ottimizzato senza radice quadrata).
+        /// Checks if the enemy is too close to the player (optimized without square root).
         /// </summary>
         protected bool TooCloseToPlayer(Rigidbody2D rb, float threshold)
         {
@@ -23,7 +23,7 @@ namespace ScriptableObjects
         }
 
         /// <summary>
-        /// Verifica se il nemico si trova nel range corretto rispetto al giocatore.
+        /// Checks if the enemy is within the correct range relative to the player.
         /// </summary>
         protected bool InTargetRange(Rigidbody2D rb, float minRange, float maxRange)
         {
@@ -34,7 +34,7 @@ namespace ScriptableObjects
         }
 
         /// <summary>
-        /// Muove fisicamente il nemico nella direzione opposta al giocatore.
+        /// Physically moves the enemy away from the player.
         /// </summary>
         protected void RunAway(Rigidbody2D rb, float speed)
         {
@@ -46,7 +46,7 @@ namespace ScriptableObjects
         }
 
         /// <summary>
-        /// Carica o insegue fisicamente il giocatore a testa bassa.
+        /// Charges or chases the player head-on.
         /// </summary>
         protected void ChargePlayer(Rigidbody2D rb, float speed)
         {
@@ -58,7 +58,7 @@ namespace ScriptableObjects
         }
 
         /// <summary>
-        /// Esegue un movimento orbitale (strafe) perpendicolare al giocatore.
+        /// Executes an orbital (strafe) movement perpendicular to the player.
         /// </summary>
         protected void OrbitPlayer(Rigidbody2D rb, float speed, bool clockwise = true)
         {

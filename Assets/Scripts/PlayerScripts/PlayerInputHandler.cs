@@ -17,28 +17,28 @@ namespace PlayerScripts
 
         private void OnEnable()
         {
-            // Attiva la mappa dei controlli
+            // Enable the control map
             controls.Enable();
 
-            // Usa gli eventi per leggere gli input del Movimento
+            // Use events to read movement input
             controls.Player.Move.performed += OnMovePerformed;
             controls.Player.Move.canceled += OnMoveCanceled;
 
-            // Usa gli eventi per leggere gli input dello Sparo
+            // Use events to read shooting input
             controls.Player.Shoot.performed += OnShootPerformed;
             controls.Player.Shoot.canceled += OnShootCanceled;
         }
 
         private void OnDisable()
         {
-            // Rimuove la sottoscrizione agli eventi per evitare memory leak
+            // Unsubscribe from events to prevent memory leaks
             controls.Player.Move.performed -= OnMovePerformed;
             controls.Player.Move.canceled -= OnMoveCanceled;
 
             controls.Player.Shoot.performed -= OnShootPerformed;
             controls.Player.Shoot.canceled -= OnShootCanceled;
 
-            // Disattiva i controlli quando l'oggetto non è attivo
+            // Disable controls when the object is not active
             controls?.Disable();
         }
 
@@ -46,7 +46,7 @@ namespace PlayerScripts
         {
             MoveInput = context.ReadValue<Vector2>();
 
-            // Vector2.ClampMagnitude è più efficiente e pulito del controllo manuale sulla magnitude (limita i valori diagonali a max 1)
+            // Vector2.ClampMagnitude is more efficient and cleaner than manual magnitude control (limits diagonal values to max 1)
             MoveInput = Vector2.ClampMagnitude(MoveInput, 1f);
         }
 
@@ -57,12 +57,12 @@ namespace PlayerScripts
 
         private void OnShootPerformed(InputAction.CallbackContext context)
         {
-            IsShootPressed = true; // Il tasto di sparo è attualmente premuto
+            IsShootPressed = true; // The shoot button is currently pressed
         }
 
         private void OnShootCanceled(InputAction.CallbackContext context)
         {
-            IsShootPressed = false; // Il tasto di sparo è stato rilasciato
+            IsShootPressed = false; // The shoot button has been released
         }
     }
 }

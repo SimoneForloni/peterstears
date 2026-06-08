@@ -4,21 +4,21 @@ using UnityEngine;
 
 namespace Controller
 {
-    [RequireComponent(typeof(Rigidbody2D))] // Evita bug: Unity aggiungerà automaticamente un Rigidbody2D se manca\
+    [RequireComponent(typeof(Rigidbody2D))] // Prevents bugs: Unity will automatically add a Rigidbody2D if missing
     public class EnemyController : MonoBehaviour
     {
         [Header("Obj Stats")]
-        [SerializeField] private EnemyData enemyData;               // Tempo minimo di attesa tra un attacco e l'altro
+        [SerializeField] private EnemyData enemyData;               // Minimum time between attacks
 
         private float currentHealth;
-        private float nextAttackTime;                                        // Timer per gestire il cooldown degli attacchi
+        private float nextAttackTime;                                        // Timer to manage attack cooldown
 
         private Rigidbody2D rb;
         private SpriteRenderer sr;
 
         private void Start()
         {
-            // Recupera il componente Rigidbody2D dal Nemico e lo SpriteRenderer dal figlio
+            // Get the Rigidbody2D component from the Enemy and the SpriteRenderer from the child
             rb = GetComponent<Rigidbody2D>();
             sr = GetComponentInChildren<SpriteRenderer>();
 
@@ -26,59 +26,59 @@ namespace Controller
             {
                 currentHealth = enemyData.MaxHealth;
 
-                // Applica lo sprite se presente
+                // Apply sprite if present
                 if (sr != null && enemyData.EnemySprite != null)
                 {
                     sr.sprite = enemyData.EnemySprite;
                 }
                 else if (sr == null)
                 {
-                    Debug.LogError($"ERRORE: Impossibile trovare uno SpriteRenderer nei sotto-oggetti di {gameObject.name}!");
+                    Debug.LogError($"ERROR: Unable to find a SpriteRenderer in the child objects of {gameObject.name}!");
                 }
             }
             else
             {
-                Debug.LogError($"ATTENZIONE: Manca l'EnemyData assegnato sull'oggetto {gameObject.name}!");
+                Debug.LogError($"WARNING: No EnemyData assigned on object {gameObject.name}!");
                 currentHealth = 3f;
             }
 
 
-            // Configurazione fisica per un gioco top-down
-            rb.gravityScale = 0f;                                            // Niente gravità verso il basso
-            rb.freezeRotation = true;                                        // Impedisce al personaggio di ruotare su se stesso quando urta un oggetto
-            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous; // Per evitare di passare attraverso i muri
+            // Physics configuration for a top-down game
+            rb.gravityScale = 0f;                                            // No gravity downwards
+            rb.freezeRotation = true;                                        // Prevents rotation when colliding with objects
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous; // Avoid passing through walls
         }
 
         private void FixedUpdate()
         {   
-            // Se il player non esiste ritorna
+            // If the player doesn't exist, return
             if (!PlayerEntity.Instance) return;
 
-            // Esegue l'algoritmo di movimento associato allo ScriptableObject dell'AI
+            // Execute the movement algorithm associated with the AI ScriptableObject
             enemyData.AIBehavior.ExecutePhysicsBehavior(this, rb, enemyData);
         }
 
         private void OnCollisionStay2D(Collision2D collision)
         {
-            // Controlla se l'oggetto con cui sta collidendo è il Player, altrimenti ritorna (TryGetComponent ottimizza la memoria ed evita allocazioni spazzatura)
+            // Check if the colliding object is the Player, otherwise return (TryGetComponent optimizes memory and avoids garbage allocation)
             if (!collision.gameObject.TryGetComponent(out PlayerEntity player)) return;
             
-            // Se non passa abbastanza tempo dall' ultimo attacco ritorna (evita che il danno venga applicato a ogni frame)
+            // If not enough time has passed since the last attack, return (prevents damage from being applied every frame)
             if (Time.time < nextAttackTime) return;
             
-            // Applica il danno al giocatore
+            // Apply damage to the player
             player.TakeDamage(enemyData.AttackDamage);
 
-            // Imposta il prossimo momento utile per poter attaccare di nuovo
+            // Set the next available moment to attack again
             nextAttackTime = Time.time + enemyData.AttackCooldown;
         }
 
         public void TakeDamage(float damage)
         {
             currentHealth -= damage;
-            Debug.Log($"{gameObject.name} ha subito danno! Vita rimasta: {currentHealth}");
+            Debug.Log($"{gameObject.name} took damage! Remaining health: {currentHealth}");
 
-            // Se la vita scende a 0 o meno, il nemico muore
+            // If health drops to 0 or below, the enemy dies
             if (currentHealth <= 0)
             {
                 Die();

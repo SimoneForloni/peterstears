@@ -5,12 +5,12 @@ namespace Pools
 {
     public class BulletPool : MonoBehaviour
     {
-        // Istanza Singleton per essere accessibile da PlayerShooting e BulletController
+        // Singleton instance to be accessible by PlayerShooting and BulletController
         public static BulletPool Instance { get; private set; }
 
         [Header("Configurazione Pool")]
         [SerializeField] private GameObject bulletPrefab;
-        [SerializeField] private int poolSize = 30; // Quanti proiettili pre-istanziare all'inizio
+        [SerializeField] private int poolSize = 30; // Number of bullets to pre-instantiate at the start
 
         private readonly Queue<GameObject> poolQueue = new();
 
@@ -26,37 +26,37 @@ namespace Pools
         {
             if (bulletPrefab == null)
             {
-                Debug.LogError("Prefab non selezionato");
+                Debug.LogError("Prefab not selected");
                 return;
             }
 
-            // Creiamo i proiettili da mettere nella pool
+            // Create bullets to put in the pool
             for (int i = 0; i < poolSize; i++)
             {
                 GameObject bullet = Instantiate(bulletPrefab, transform);
-                bullet.SetActive(false); // Disattiva il proiettile cosicche non si veda prima che venga sparato
+                bullet.SetActive(false); // Deactivate the bullet so it's not visible before being shot
                 poolQueue.Enqueue(bullet);
             }
         }
 
         public GameObject GetBullet(Vector2 position, Quaternion rotation)
         {
-            // Creiamo un bullet
-            // Se la coda ha proiettili disponibili, ne prende uno
-            // Se finiamo i proiettili (es. Fire rate folle), ne creiamo uno nuovo per sicurezza (espansione dinamica)
+            // Create a bullet
+            // If the queue has available bullets, take one
+            // If we run out of bullets (e.g., high fire rate), create a new one for safety (dynamic expansion)
             GameObject bullet = (poolQueue.Count > 0) ? poolQueue.Dequeue() : Instantiate(bulletPrefab, transform);
 
             bullet.transform.position = position;
             bullet.transform.rotation = rotation;
-            bullet.SetActive(true); // Attiva il proiettile 
+            bullet.SetActive(true); // Activate the bullet 
 
             return bullet;
         }
 
-        // Ripone il proiettile nella coda per poterlo riutilizzare
+        // Return the bullet to the queue for reuse
         public void ReturnBullet(GameObject bullet)
         {
-            bullet.SetActive(false); // Disattiva il proiettile 
+            bullet.SetActive(false); // Deactivate the bullet 
             poolQueue.Enqueue(bullet);
         }
     }

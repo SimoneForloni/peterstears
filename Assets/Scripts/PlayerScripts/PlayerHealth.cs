@@ -5,15 +5,15 @@ namespace PlayerScripts
 {
     public class PlayerHealth : MonoBehaviour
     {
-        // Espone la vita del player con un evento
+        // Expose player health with an event
         public event Action<float, float> OnHealthChanged; // (current, max)
 
         [Header("Health Settings")]
-        [SerializeField] private float maxHealth = 3.5f;  // Numero di cuori di vita
+        [SerializeField] private float maxHealth = 3.5f;  // Number of hearts of life
         private float currentHealth;
 
         [Header("Invulnerability")]
-        [SerializeField] private float iFramesDuration = 1f;  // Tempo in secondi di invulnerabilità
+        [SerializeField] private float iFramesDuration = 1f;  // Duration in seconds of invulnerability
         private float iFramesTimer;
         private bool isInvulnerable;
 
@@ -24,7 +24,7 @@ namespace PlayerScripts
 
         void Update()
         {
-            // Logica dei frame di invulnerabilità gestita nell'Update (più fluida per i timer non fisici)
+            // Handle invulnerability logic in Update (smoother for non-physical timers)
             HandleInvulnerability();
         }
 
@@ -32,7 +32,7 @@ namespace PlayerScripts
         {
             if (!isInvulnerable) return;
 
-            // Riduce il timer in base al tempo reale passato nel frame corrente
+            // Reduce the timer based on real-time passed in the current frame
             iFramesTimer -= Time.deltaTime;
             if (iFramesTimer <= 0)
             {
@@ -46,12 +46,12 @@ namespace PlayerScripts
 
             currentHealth -= damage;
             OnHealthChanged?.Invoke(currentHealth, maxHealth);
-            Debug.Log("Player ha subito danno! Vita rimasta: " + currentHealth);
+            Debug.Log("Player took damage! Remaining health: " + currentHealth);
 
             if (currentHealth <= 0)
             {
                 Die();
-                return; // Interrompe l'esecuzione prima dei frame di invulnerabilità se il player è morto
+                return; // Interrupt execution before invulnerability frames if the player is dead
             }
 
             isInvulnerable = true;
@@ -60,15 +60,15 @@ namespace PlayerScripts
 
         private void Die()
         {
-            // Cerca il direttore d'orchestra sullo stesso oggetto
+            // Look for the director on the same object
             if (TryGetComponent(out PlayerEntity playerEntity))
             {
-                // Dice al direttore di gestire la morte (disattivare controlli, far partire animazioni, ecc.)
+                // Tell the director to handle death (disable controls, start animations, etc.)
                 playerEntity.HandlePlayerDeath();
             }
             else
             {
-                // Fallback di sicurezza: se non c'è il manager, distrugge l'oggetto normalmente
+                // Fallback: if there's no manager, destroy the object normally
                 Destroy(gameObject);
             }
         }

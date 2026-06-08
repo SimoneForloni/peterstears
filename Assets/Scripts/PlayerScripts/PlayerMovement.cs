@@ -3,13 +3,13 @@ using UnityEngine;
 namespace PlayerScripts
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(PlayerInputHandler))] // Assicura che ci sia lo script di input
+    [RequireComponent(typeof(PlayerInputHandler))] // Ensures the input script is present
     public class PlayerMovement : MonoBehaviour
     {
         [Header("Movement Settings")]
-        [SerializeField] private float moveSpeed = 6f;                      // Velocità di movimento
-        [SerializeField][Range(10f, 100f)] private float acceleration = 60f; // Più è alto, più risponde velocemente
-        [SerializeField][Range(10f, 100f)] private float deceleration = 40f; // Più è alto, più rallenta velocemente
+        [SerializeField] private float moveSpeed = 6f;                      // Movement speed
+        [SerializeField][Range(10f, 100f)] private float acceleration = 60f; // Higher value means faster response
+        [SerializeField][Range(10f, 100f)] private float deceleration = 40f; // Higher value means faster deceleration
 
         private Rigidbody2D rb;
         private PlayerInputHandler inputHandler;
@@ -17,14 +17,14 @@ namespace PlayerScripts
 
         private void Awake()
         {
-            // Recupera il componente Rigidbody2D e InputHandler dal Player
+            // Get the Rigidbody2D and InputHandler components from the player
             rb = GetComponent<Rigidbody2D>();
             inputHandler = GetComponent<PlayerInputHandler>();
 
-            // Config del Rigidbody2D per un gioco top-down
-            rb.gravityScale = 0f;                                            // Niente gravità verso il basso
-            rb.freezeRotation = true;                                        // Impedisce al personaggio di ruotare su se stesso quando urta un oggetto
-            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous; // Per evitare di passare attraverso i muri
+            // Configure Rigidbody2D for a top-down game
+            rb.gravityScale = 0f;                                            // No gravity downwards
+            rb.freezeRotation = true;                                        // Prevents rotation when colliding with objects
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous; // Avoid passing through walls
         }
 
         private void FixedUpdate()
@@ -32,13 +32,13 @@ namespace PlayerScripts
             var moveInput = inputHandler.MoveInput;
             var targetVelocity = moveInput * moveSpeed;
 
-            // Gestisce il movimento con accelerazione e decelerazione (sqrMagnitude è più veloce matematicamente di magnitude)
+            // Handle movement with acceleration and deceleration (sqrMagnitude is faster mathematically than magnitude)
             var currentStep = (moveInput.sqrMagnitude > 0) ? acceleration : deceleration;
 
-            // Cambia in modo fluido la velocità attuale verso quella desiderata
+            // Smoothly change the current velocity towards the desired velocity
             currentVelocity = Vector2.MoveTowards(currentVelocity, targetVelocity, currentStep * Time.fixedDeltaTime);
 
-            // Muove il Rigidbody2D basandosi sulla moveSpeed
+            // Move the Rigidbody2D based on moveSpeed
             rb.linearVelocity = currentVelocity;
         }
     }

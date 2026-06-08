@@ -8,10 +8,10 @@ namespace PlayerScripts
     [RequireComponent(typeof(PlayerHealth))]
     public class PlayerEntity : MonoBehaviour
     {
-        // Istanza del player (questa classe)
+        // Instance of the player (this class)
         public static PlayerEntity Instance { get; private set; }
 
-        // Riferimenti ai sotto-moduli (accessibili in sola lettura dall'esterno)
+        // References to sub-modules (read-only from outside)
         private PlayerInputHandler inputHandler;
         private PlayerMovement movement;
         private PlayerShooting shooting;
@@ -25,26 +25,26 @@ namespace PlayerScripts
 
         private void Awake()
         {
-            // Assegna l'istanza di questa classe alla variabile
+            // Assign this class instance to the variable
             Instance = this;
-            // Centralizziamo il recupero di tutti i componenti sul Player
+            // Centralize retrieval of all player components
             inputHandler = GetComponent<PlayerInputHandler>();
             movement = GetComponent<PlayerMovement>();
             shooting = GetComponent<PlayerShooting>();
             health = GetComponent<PlayerHealth>();
         }
 
-        // Esempio di gestione centrale di un evento: il Player muore
+        // Example of centralized event handling: Player death
         public void HandlePlayerDeath()
         {
-            Debug.Log("Il Direttore d'Orchestra disattiva il Player.");
+            Debug.Log("The Director deactivates the Player.");
         
-            // Disattiviamo l'input e lo sparo prima di distruggere l'oggetto
+            // Disable input and shooting before destroying the object
             inputHandler.enabled = false;
             shooting.enabled = false;
             movement.enabled = false;
 
-            Destroy(gameObject, 0.5f); // Distruggi dopo mezzo secondo (magari per far finire un'animazione)
+            Destroy(gameObject, 0.5f); // Destroy after half a second (maybe to finish an animation)
         }
     }
 }
