@@ -35,7 +35,7 @@ namespace PlayerScripts
             // Gestisce il movimento con accelerazione e decelerazione (sqrMagnitude è più veloce matematicamente di magnitude)
             var currentStep = (moveInput.sqrMagnitude > 0) ? acceleration : deceleration;
 
-            // Cambia in modo fluido la velocita attuale verso quella desiderata
+            // Cambia in modo fluido la velocità attuale verso quella desiderata
             currentVelocity = Vector2.MoveTowards(currentVelocity, targetVelocity, currentStep * Time.fixedDeltaTime);
 
             // Muove il Rigidbody2D basandosi sulla moveSpeed
