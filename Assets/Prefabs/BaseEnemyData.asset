@@ -12,9 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66966a4ec62a483e6975fbff9a004185, type: 3}
   m_Name: BaseEnemyData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  enemyName: Zombie
-  enemySprite: {fileID: 4495478712733764576, guid: ce26d82917be7ef7b8d8410d2279ac14, type: 3}
-  maxHealth: 10
-  attackDamage: 1
-  attackCooldown: 2
-  moveSpeed: 2
+  <EnemyName>k__BackingField: BaseEnemy
+  <EnemySprite>k__BackingField: {fileID: 3803185021826026693, guid: 5f2b959637ac52f3cb436d87638184d1, type: 3}
+  <Strain>k__BackingField: 0
+  <BiomassPrefab>k__BackingField: {fileID: 0}
+  <BiomassRewardAmount>k__BackingField: 3
+  <MaxHealth>k__BackingField: 3
+  <AttackDamage>k__BackingField: 0.5
+  <AttackCooldown>k__BackingField: 1
+  <MoveSpeed>k__BackingField: 3
+  <AIBehavior>k__BackingField: {fileID: 0}
+  <AttackRange>k__BackingField: 1.5

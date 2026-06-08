@@ -11,7 +11,7 @@ namespace Controller.Creatures
             if (!PlayerEntity.Instance) return;
            
             Vector2 playerPos = PlayerEntity.Instance.transform.position;
-            var direction = playerPos - (Vector2)rb.transform.position;
+            var direction = playerPos - rb.position;
             var targetPosition = (Vector2)rb.transform.position + direction * (data.MoveSpeed * Time.fixedDeltaTime);
             
             rb.MovePosition(targetPosition);

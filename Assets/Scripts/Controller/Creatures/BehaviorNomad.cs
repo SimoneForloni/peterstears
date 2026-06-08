@@ -10,8 +10,8 @@ namespace Controller.Creatures
         {
             if (!PlayerEntity.Instance) return;
             
-            var playerPos = (Vector2)PlayerEntity.Instance.transform.position;
-            var directionToPlayer = playerPos - (Vector2)rb.transform.position;
+            Vector2 playerPos = PlayerEntity.Instance.transform.position;
+            var directionToPlayer = playerPos - rb.position;
             var distance  = directionToPlayer.magnitude;
             var normalizedDirection = directionToPlayer.normalized;
 
